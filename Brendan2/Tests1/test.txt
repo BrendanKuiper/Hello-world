@@ -1,0 +1,42 @@
+*** Settings ***
+Library           ExtendedSelenium2Library
+Library           HttpLibrary.HTTP
+Library           String
+Library           XML
+Library           OperatingSystem
+
+*** Test Cases ***
+TC01
+    Open Browser    https://www.google.it    chrome
+    Maximize Browser Window
+    Input Text    //input[@id='lst-ib']    Ashlee Crawford
+    Click Link    //div[@id='search']/div/div[@id='ires']/div[@id='rso']/div[@class='_NId'][1]/div[@class='g']/div/div/div[@class='rc']/h3[@class='r']/a
+    Click Link    //ul[@class='nav cf']/li[3]/a
+    Click Link    LINK = EXTERNAL
+    Click Element    //div[@id='libraries']/div[@class='content-area']/div[@id='libraries-external']/div[@class='column one-thirds'][3]/div[@class='link'][3]/a
+    Select Window    url =https://github.com/robotframework/Selenium2Library
+    Click Element    //div[4]/div/div[@id='js-repo-pjax-container']/div[@class='container new-discussion-timeline experiment-repo-nav']/div[@class='repository-content']/div[@id='readme']/article[@class='markdown-body entry-content']/ul[1]/li[1]/a[2]
+    Page Should Contain    Get Selenium Speed
+    Close Browser
+
+API
+    Create HTTP Context    api.nasa.gov    https
+    GET    /planetary/apod?api_key=fnQn6stU5tG8Yz0icBjEUOJsiJ5KRg7tIYSzKPDF
+    ${body}=    Get Response Body
+    Log Response Body
+    Response Body Should Contain    explanation
+    ${result}=    Get Json Value    ${body}    /explanation
+    ${count}=    Get Count    ${result}    star
+    Json Value Should not Equal    ${body}    /copyright    Hans Kazan
+    Create File    C:\Users\brendan.kuiper\hanskazantxt    ${body}
+
+Obstacle #57683
+    Open Browser    https://obstaclecourse.tricentis.com/Obstacles/Next?oId=57683&retry=1    chrome
+    Click Element    //i[@class='ion-ios-calendar-outline']
+    Get Text    //input[@id='dateGenerated']
+    #33678
+    Open Browser    http://obstaclecourse.tricentis.com/Obstacles/Next?oId=33678&retry=1    chrome
+    Click Button    id('one')
+
+*** Keywords ***
+Demo
